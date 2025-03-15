@@ -1,18 +1,24 @@
 # Remember to adjust your student ID in meta.xml
 import numpy as np
-import pickle
-import random
-import gym
+import pickle  # Load Q-table
+def obs_to_state(obs):
+    return obs
 
+class StudentAgent:
+    def __init__(self, q_table_path="q_table.pkl"):
+        """Load the pre-trained Q-table."""
+        with open(q_table_path, "rb") as f:
+            self.q_table = pickle.load(f)
+        self.action_size = 6  # Number of actions
+
+    def get_action(self, state):
+        """Select action based on Q-table."""
+        if state not in self.q_table:
+            return np.random.choice(range(self.action_size))  # If unseen state, choose random action
+        return np.argmax(self.q_table[state])  # Select the best action
+
+# Usage example
+agent = StudentAgent()
 def get_action(obs):
-    
-    # TODO: Train your own agent
-    # HINT: If you're using a Q-table, consider designing a custom key based on `obs` to store useful information.
-    # NOTE: Keep in mind that your Q-table may not cover all possible states in the testing environment.
-    #       To prevent crashes, implement a fallback strategy for missing keys. 
-    #       Otherwise, even if your agent performs well in training, it may fail during testing.
-
-
-    return random.choice([0, 1, 2, 3, 4, 5]) # Choose a random action
-    # You can submit this random agent to evaluate the performance of a purely random strategy.
+    return agent.get_action(obs_to_state(obs))
 
