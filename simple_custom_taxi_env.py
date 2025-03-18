@@ -33,8 +33,14 @@ class SimpleTaxiEnv():
         """Reset the environment, ensuring Taxi, passenger, and destination are not overlapping obstacles"""
         self.current_fuel = self.fuel_limit
         self.passenger_picked_up = False
-        
+        # Generate unique station locations
+        all_positions = [(x, y) for x in range(self.grid_size) for y in range(self.grid_size)]
+        self.stations = random.sample(all_positions, 4)
 
+        available_positions = set(all_positions) - set(self.stations)
+        num_obstacles = random.randint(0, len(available_positions)//4)
+        self.obstacles = set(random.sample(list(available_positions), num_obstacles))
+        
         available_positions = [
             (x, y) for x in range(self.grid_size) for y in range(self.grid_size)
             if (x, y) not in self.stations and (x, y) not in self.obstacles
@@ -43,7 +49,6 @@ class SimpleTaxiEnv():
         self.taxi_pos = random.choice(available_positions)
         
         self.passenger_loc = random.choice([pos for pos in self.stations])
-        
         
         possible_destinations = [s for s in self.stations if s != self.passenger_loc]
         self.destination = random.choice(possible_destinations)
